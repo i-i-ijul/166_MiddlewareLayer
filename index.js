@@ -121,7 +121,7 @@ app.get('/', async (req, res) => {
     return successResponse(res, 'Data berhasil diambil', result.rows)
 })
 
-app.port(
+app.post(
     '/biodata',
     validateBody(biodataSchema),
     async (req, res) => {
@@ -137,6 +137,27 @@ app.port(
             res, 'Data berhail ditambahkan',
             result.rows(0),
             201
+        )
+    }
+)
+
+app.put(
+    '/biodata',
+    validateBody(biodataSchema),
+    validateBody(biodataSchema.fork(
+        ['nama', 'nim', 'kelas'],
+        field => field.required()
+    ).fork(['id'], field.forbidden())),
+    async (req, res) => {
+        const { id } = req.params
+        const { nama, nim, kelas } = req.body
+
+        const result = await pool.query(
+            `UPDATE BIODATA
+            SET NAMA = $1, nim = $2, kelas = $3
+            where id = $4
+            returnig *`,
+            [nama, nim, kelas, id]
         )
     }
 )
