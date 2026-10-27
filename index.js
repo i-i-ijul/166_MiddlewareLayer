@@ -23,7 +23,13 @@ app.use((req, res, next)) => {
     req.on('finish', () => {
         const duration = Date.now() - start
 
-      
+        console.log({
+            method: req.method,
+            url: req.originalurl,
+            status: res.statusCode,
+            duration: `$(duration)ms`
+        })
+    })
 
     next ()
 }
