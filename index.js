@@ -159,5 +159,41 @@ app.put(
             returnig *`,
             [nama, nim, kelas, id]
         )
+
+        if (result.rowCount === 0) {
+            return errorResponse(
+                res, 'Datanya ga ketemu', 404
+            )
+        }
+
+        return successResponse(
+            res,
+            'Data berhasil diupdate',
+            result.rows(0)
+        )
+    }
+)
+
+app.delete(
+    '/biodata/:id',
+    validateParams(idSchema),
+    async (req, res) => {
+        const { id } = req.params
+
+        const result = await pool.query(
+            `DELETE FROM BIODATA where id = $1 returning *`,
+            [id]
+        )
+        if (result.rowCount === 0) {
+            return errorResponse(
+                res, 'Datanya ga ketemu', 404
+            )
+        }
+
+        return successResponse(
+            res,
+            'Data berhasil dihapus',
+            result.rows(0)
+        )   
     }
 )
